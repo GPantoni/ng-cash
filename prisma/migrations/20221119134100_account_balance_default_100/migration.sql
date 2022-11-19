@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "accounts" ALTER COLUMN "balance" DROP NOT NULL,
+ALTER COLUMN "balance" SET DEFAULT 10000;

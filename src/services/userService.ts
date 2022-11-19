@@ -1,11 +1,12 @@
 import { SignData } from '../repositories/userRepository.js';
 import * as userRepository from '../repositories/userRepository.js';
+import * as accountRepository from '../repositories/accountRepository.js';
 import errorUtils from '../utils/errorUtils.js';
 import { encryptPassword, validatePassword } from '../utils/bcryptUtils.js';
 import { createToken } from '../utils/tokenUtils.js';
 
-export async function signUp(newUser: SignData) {
-  const { username, password } = newUser;
+export async function signUp(newUserData: SignData) {
+  const { username, password } = newUserData;
 
   const isUsernameTaken = await userRepository.findUserByUsername(username);
   if (isUsernameTaken) {
@@ -13,9 +14,12 @@ export async function signUp(newUser: SignData) {
   }
 
   const hashedPassword = encryptPassword(password);
-  newUser.password = hashedPassword;
+  newUserData.password = hashedPassword;
 
-  return await userRepository.createUser(newUser);
+  const newUser = await userRepository.createUser(newUserData);
+  newUser?.id && (await accountRepository.createAccount(newUser.id));
+
+  return;
 }
 
 export async function signIn(userData: SignData) {
