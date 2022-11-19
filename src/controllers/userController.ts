@@ -6,3 +6,9 @@ export async function signUp(req: Request, res: Response) {
 
   res.sendStatus(201);
 }
+
+export async function signIn(req: Request, res: Response) {
+  const token = await userService.signIn(res.locals.validated);
+
+  res.status(200).send({ token });
+}
